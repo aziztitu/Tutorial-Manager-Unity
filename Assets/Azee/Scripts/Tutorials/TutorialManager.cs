@@ -54,7 +54,6 @@ public class TutorialManager : MonoBehaviour
                     Name = tutorialPage.Name,
                     TutorialPage = tutorialPage
                 });
-                Debug.Log("Tutorial Pages: " + _tutorialPages.Count);
             }
         }
     }
@@ -67,7 +66,7 @@ public class TutorialManager : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Debug.Log("Tutorial Pages: " + _tutorialPages.Count);
+//        Debug.Log("Tutorial Pages: " + _tutorialPages.Count);
 //        DisableTutorialPages();
     }
 
@@ -108,5 +107,11 @@ public class TutorialManager : MonoBehaviour
     public Dictionary<string, TutorialPage> GetTutorialPages()
     {
         return _tutorialPages;
+    }
+
+    public void ShowTutorial(string name)
+    {
+//        _tutorialPages[name].gameObject.SetActive(true);
+        _tutorialPages[name].Begin();
     }
 }

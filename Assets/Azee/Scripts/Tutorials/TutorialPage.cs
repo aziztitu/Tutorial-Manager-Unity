@@ -7,27 +7,65 @@ using UnityEngine.Events;
 public class TutorialPage : MonoBehaviour
 {
     public string Name = "TutorialName";
+    public bool ToggleActive = true;
 
-    public UnityEvent OnBeginEvent;
+    [Header("Timer")]
+    public bool EnableTimer = false;
+    public float TimerPeriod = 5f;
+
+    [Header("Events")] public UnityEvent OnBeginEvent;
     public UnityEvent OnEndEvent;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    private bool _isShowing = false;
+
+    // Use this for initialization
+    void Start()
+    {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+    }
 
     public void Begin()
     {
-        OnBeginEvent.Invoke();
+        if (!_isShowing)
+        {
+            _isShowing = true;
+
+            if (ToggleActive)
+            {
+                gameObject.SetActive(true);
+            }
+
+            OnBeginEvent.Invoke();
+
+            if (EnableTimer)
+            {
+                StartCoroutine(EndTutorialAfterTimer());
+            }
+        }
     }
 
     public void End()
     {
-        OnEndEvent.Invoke();
+        if (_isShowing)
+        {
+            _isShowing = false;
+
+            if (ToggleActive)
+            {
+                gameObject.SetActive(false);
+            }
+
+            OnEndEvent.Invoke();
+        }
+    }
+
+    private IEnumerator EndTutorialAfterTimer()
+    {
+        yield return new WaitForSeconds(TimerPeriod);
+        End();
     }
 }

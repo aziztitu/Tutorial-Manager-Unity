@@ -327,7 +327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &189936360
 RectTransform:
   m_ObjectHideFlags: 0
@@ -358,7 +358,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d1b1d97ff3b3be4ea36a7a3e03bf2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: TutorialName1
+  Name: B
+  ToggleActive: 1
+  EnableTimer: 1
+  TimerPeriod: 5
   OnBeginEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -366,7 +369,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   OnEndEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 234925998}
+        m_MethodName: Begin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &234925996
@@ -384,7 +398,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &234925997
 RectTransform:
   m_ObjectHideFlags: 0
@@ -415,7 +429,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d1b1d97ff3b3be4ea36a7a3e03bf2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: TutorialName2
+  Name: C
+  ToggleActive: 1
+  EnableTimer: 1
+  TimerPeriod: 5
   OnBeginEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -423,7 +440,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   OnEndEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 54437148}
+        m_MethodName: OnTutorialsFinished
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &282840810
@@ -582,7 +610,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &650481981
 RectTransform:
   m_ObjectHideFlags: 0
@@ -613,7 +641,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d1b1d97ff3b3be4ea36a7a3e03bf2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: TutorialName
+  Name: A
+  ToggleActive: 1
+  EnableTimer: 1
+  TimerPeriod: 5
   OnBeginEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -621,7 +652,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   OnEndEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 189936361}
+        m_MethodName: Begin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &890753556
@@ -871,10 +913,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tutorialPageEntries:
-  - Name: TutorialName
+  - Name: A
     TutorialPage: {fileID: 650481982}
-  - Name: TutorialName1
+  - Name: B
     TutorialPage: {fileID: 189936361}
-  - Name: TutorialName2
+  - Name: C
     TutorialPage: {fileID: 234925998}
   _buttonFindTutorialPagesInChildren: 0
