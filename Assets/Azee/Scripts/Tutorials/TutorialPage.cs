@@ -21,12 +21,12 @@ public class TutorialPage : MonoBehaviour
 		
 	}
 
-    public void OnBegin()
+    public void Begin()
     {
         OnBeginEvent.Invoke();
     }
 
-    public void OnEnd()
+    public void End()
     {
         OnEndEvent.Invoke();
     }

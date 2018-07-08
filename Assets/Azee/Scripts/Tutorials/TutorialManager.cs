@@ -21,7 +21,6 @@ public class TutorialManager : MonoBehaviour
         [ReadOnly] public TutorialPage TutorialPage;
     }
 
-    [SerializeField]
     private readonly Dictionary<string, TutorialPage> _tutorialPages = new Dictionary<string, TutorialPage>();
 
     [SerializeField] private List<TutorialPageWithName> _tutorialPageEntries = new List<TutorialPageWithName>();
@@ -37,7 +36,7 @@ public class TutorialManager : MonoBehaviour
 
     void FindTutorialPagesInChildren()
     {
-        TutorialPage[] tutorialPagesInChildren = GetComponentsInChildren<TutorialPage>();
+        TutorialPage[] tutorialPagesInChildren = GetComponentsInChildren<TutorialPage>(true);
 
         _tutorialPages.Clear();
         _tutorialPageEntries.Clear();
@@ -55,33 +54,54 @@ public class TutorialManager : MonoBehaviour
                     Name = tutorialPage.Name,
                     TutorialPage = tutorialPage
                 });
+                Debug.Log("Tutorial Pages: " + _tutorialPages.Count);
             }
         }
     }
 
-    public void OnValidate()
+    void Awake()
     {
-        /*Debug.Log("Clearing _tutorialPageEntries");
-        _tutorialPageEntries.Clear();
-        foreach (KeyValuePair<string, TutorialPage> keyValuePair in _tutorialPages)
-        {
-            Debug.Log("Adding "+ keyValuePair.Key);
-            _tutorialPageEntries.Add(new TutorialPageWithName
-            {
-                Name = keyValuePair.Key,
-                TutorialPage = keyValuePair.Value
-            });
-        }*/
+        RecoverTutorialPages();
     }
 
     // Use this for initialization
     void Start()
     {
+        Debug.Log("Tutorial Pages: " + _tutorialPages.Count);
+//        DisableTutorialPages();
     }
 
     // Update is called once per frame
     void Update()
     {
+    }
+
+    /*
+     * Dictionary Objects get destroyed by Unity once the game is started.
+     * So we recover the dictionary's data from the entries.
+     */
+    private void RecoverTutorialPages()
+    {
+        _tutorialPages.Clear();
+        foreach (TutorialPageWithName tutorialPageWithName in _tutorialPageEntries)
+        {
+            if (_tutorialPages.ContainsKey(tutorialPageWithName.Name))
+            {
+                Debug.LogError("Duplicate Tutorial Name found: " + tutorialPageWithName.Name);
+            }
+            else
+            {
+                _tutorialPages.Add(tutorialPageWithName.Name, tutorialPageWithName.TutorialPage);
+            }
+        }
+    }
+
+    private void DisableTutorialPages()
+    {
+        foreach (TutorialPage tutorialPage in _tutorialPages.Values)
+        {
+            tutorialPage.gameObject.SetActive(false);
+        }
     }
 
 
