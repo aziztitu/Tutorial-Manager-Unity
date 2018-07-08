@@ -18,6 +18,13 @@ public class TutorialPage : MonoBehaviour
 
     private bool _isShowing = false;
 
+    private Animator _animator;
+
+    void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -37,6 +44,10 @@ public class TutorialPage : MonoBehaviour
             if (ToggleActive)
             {
                 gameObject.SetActive(true);
+                if (_animator && _animator.enabled)
+                {
+                    _animator.SetTrigger("showTutorial");
+                }
             }
 
             OnBeginEvent.Invoke();
@@ -56,11 +67,26 @@ public class TutorialPage : MonoBehaviour
 
             if (ToggleActive)
             {
+                if (_animator && _animator.enabled)
+                {
+                    _animator.SetTrigger("hideTutorial");
+                    return;
+                }
+
                 gameObject.SetActive(false);
             }
 
             OnEndEvent.Invoke();
         }
+    }
+
+    /*
+     * The hide animation clip must fire this event once the tutorial is hidden.
+     */
+    public void OnTutorialHidden()
+    {
+        gameObject.SetActive(false);
+        OnEndEvent.Invoke();
     }
 
     private IEnumerator EndTutorialAfterTimer()
