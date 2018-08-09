@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,10 +9,13 @@ public class TutorialPage : MonoBehaviour
 {
     public string Name = "TutorialName";
     public bool ToggleActive = true;
+    public bool PauseTime = false;
 
-    [Header("Timer")]
-    public bool EnableTimer = false;
+    [Header("Timer-Based")] public bool EnableTimer = false;
     public float TimerPeriod = 5f;
+
+    [Header("Broadcast-Action-Based")] public bool EnableAction = false;
+    public string AwaitingAction = "";
 
     [Header("Events")] public UnityEvent OnBeginEvent;
     public UnityEvent OnEndEvent;
@@ -19,6 +23,8 @@ public class TutorialPage : MonoBehaviour
     private bool _isShowing = false;
 
     private Animator _animator;
+
+    private IEnumerator _endAfterTimeCoroutine = null;
 
     void Awake()
     {
@@ -37,7 +43,7 @@ public class TutorialPage : MonoBehaviour
 
     public void Begin()
     {
-        if (!_isShowing)
+        if (!_isShowing && TutorialManager.Instance.IsTutorialManagerEnabled())
         {
             _isShowing = true;
 
@@ -54,7 +60,22 @@ public class TutorialPage : MonoBehaviour
 
             if (EnableTimer)
             {
-                StartCoroutine(EndTutorialAfterTimer());
+                if (_endAfterTimeCoroutine != null)
+                {
+                    StopCoroutine(_endAfterTimeCoroutine);
+                }
+                _endAfterTimeCoroutine = EndTutorialAfterTimer();
+                StartCoroutine(_endAfterTimeCoroutine);
+            }
+
+            if (EnableAction)
+            {
+                TutorialManager.Instance.AddAwaitingActionForTutorial(this, AwaitingAction);
+            }
+
+            if (PauseTime)
+            {
+                Time.timeScale = 0;
             }
         }
     }
@@ -64,6 +85,11 @@ public class TutorialPage : MonoBehaviour
         if (_isShowing)
         {
             _isShowing = false;
+
+            if (PauseTime)
+            {
+                Time.timeScale = 1;
+            }
 
             if (ToggleActive)
             {
@@ -80,6 +106,25 @@ public class TutorialPage : MonoBehaviour
         }
     }
 
+    public void Cancel()
+    {
+        if (_isShowing)
+        {
+            _isShowing = false;
+
+            if (ToggleActive)
+            {
+                if (_animator && _animator.enabled)
+                {
+                    _animator.SetTrigger("hideTutorial");
+                    return;
+                }
+
+                gameObject.SetActive(false);
+            }
+        }
+    }
+
     /*
      * The hide animation clip must fire this event once the tutorial is hidden.
      */
@@ -91,7 +136,22 @@ public class TutorialPage : MonoBehaviour
 
     private IEnumerator EndTutorialAfterTimer()
     {
-        yield return new WaitForSeconds(TimerPeriod);
+        yield return new WaitForSecondsRealtime(TimerPeriod);
+
+        _endAfterTimeCoroutine = null;
         End();
+    }
+
+    void OnDisable()
+    {
+
+    }
+
+    void OnEnable()
+    {
+        if (_endAfterTimeCoroutine != null)
+        {
+            StartCoroutine(_endAfterTimeCoroutine);
+        }
     }
 }

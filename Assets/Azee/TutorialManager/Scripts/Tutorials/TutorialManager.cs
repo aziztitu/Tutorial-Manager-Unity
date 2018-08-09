@@ -21,6 +21,16 @@ public class TutorialManager : MonoBehaviour
         [ReadOnly] public TutorialPage TutorialPage;
     }
 
+    [Serializable]
+    public class TutorialAwaitingAction
+    {
+        [ReadOnly] public string AwaitingAction = "";
+        [ReadOnly] public TutorialPage TutorialPage;
+    }
+
+    [ReadOnly] [SerializeField] private List<TutorialAwaitingAction> TutorialsAwaitingAction = new List<TutorialAwaitingAction>();
+
+
     private readonly Dictionary<string, TutorialPage> _tutorialPages = new Dictionary<string, TutorialPage>();
 
     [SerializeField] private List<TutorialPageWithName> _tutorialPageEntries = new List<TutorialPageWithName>();
@@ -28,6 +38,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] [Button("Find tutorial pages in children", "FindTutorialPagesInChildren")]
     private bool _buttonFindTutorialPagesInChildren;
 
+    [ReadOnly] [SerializeField] private bool _isEnabled = true;
 
     public TutorialManager() : base()
     {
@@ -67,7 +78,7 @@ public class TutorialManager : MonoBehaviour
     void Start()
     {
 //        Debug.Log("Tutorial Pages: " + _tutorialPages.Count);
-//        DisableTutorialPages();
+//        DeactivateTutorialPages();
     }
 
     // Update is called once per frame
@@ -95,7 +106,7 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    private void DisableTutorialPages()
+    private void DeactivateTutorialPages()
     {
         foreach (TutorialPage tutorialPage in _tutorialPages.Values)
         {
@@ -113,5 +124,85 @@ public class TutorialManager : MonoBehaviour
     {
 //        _tutorialPages[name].gameObject.SetActive(true);
         _tutorialPages[name].Begin();
+    }
+
+    public void HideTutorial(string name)
+    {
+        //        _tutorialPages[name].gameObject.SetActive(false);
+        _tutorialPages[name].End();
+    }
+
+    public void CancelTutorial(string name)
+    {
+        //        _tutorialPages[name].gameObject.SetActive(false);
+        _tutorialPages[name].Cancel();
+    }
+
+    public void CancelAllTutorials()
+    {
+        foreach (TutorialPage tutorialPage in _tutorialPages.Values)
+        {
+            tutorialPage.Cancel();
+        }
+    }
+
+    public void AddAwaitingActionForTutorial(TutorialPage tutorialPage, string action)
+    {
+        bool changed = false;
+        foreach (TutorialAwaitingAction tutorialAwaitingAction in TutorialsAwaitingAction)
+        {
+            if (tutorialAwaitingAction.TutorialPage == tutorialPage)
+            {
+                tutorialAwaitingAction.AwaitingAction = action;
+                changed = true;
+            }
+        }
+
+        if (!changed)
+        {
+            TutorialsAwaitingAction.Add(new TutorialAwaitingAction()
+            {
+                TutorialPage = tutorialPage,
+                AwaitingAction = action
+            });
+        }
+    }
+
+    public void BroadcastTutorialAction(string action)
+    {
+        List<TutorialAwaitingAction> deleteList = new List<TutorialAwaitingAction>();
+
+        foreach (TutorialAwaitingAction tutorialAwaitingAction in TutorialsAwaitingAction)
+        {
+            if (tutorialAwaitingAction.AwaitingAction.Equals(action))
+            {
+                tutorialAwaitingAction.TutorialPage.End();
+                deleteList.Add(tutorialAwaitingAction);
+            }
+        }
+
+        foreach (TutorialAwaitingAction deleteObj in deleteList)
+        {
+            TutorialsAwaitingAction.Remove(deleteObj);
+        }
+
+        deleteList.Clear();
+    }
+
+    public void EnableTutorialManager()
+    {
+        _isEnabled = true;
+    }
+
+    public void DisableTutorialManager()
+    {
+        _isEnabled = false;
+
+        CancelAllTutorials();
+    }
+
+    public bool IsTutorialManagerEnabled()
+    {
+        return _isEnabled;
     }
 }
